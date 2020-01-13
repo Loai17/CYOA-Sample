@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		CYOA Sample
+	</title>
+	<style type="text/css">
+		/*TODOLIST CSS*/
+$menuHeight: 65px+10px;
+@mixin transition {
+    transition-property: background-color opacity;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+}
+
+html,
+body {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    padding: 0;
+    margin: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#mazeContainer {
+    transition-property: opacity;
+    transition-duration: 1s;
+    transition-timing-function: linear;
+    top: $menuHeight;
+    opacity: 0;
+    display: inline-block;
+    background-color: rgba(0, 0, 0, 0.30);
+    margin: auto;
+
+    #mazeCanvas {
+        margin: 0;
+        display: block;
+        border: solid 1px black;
+    }
+}
+
+input,
+select {
+    @include transition;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.30);
+    height: 45px;
+    width: 150px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    display: inline-block;
+    font-size: 15px;
+    text-align: center;
+    text-decoration: none;
+    appearance: none;
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.70);
+    }
+    &:active {
+        background-color: black;
+    }
+    &:focus {
+        outline: none;
+    }
+}
+
+
+.custom-select {
+    display: inline-block;
+    select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAh0lEQVQ4T93TMQrCUAzG8V9x8QziiYSuXdzFC7h4AcELOPQAdXYovZCHEATlgQV5GFTe1ozJlz/kS1IpjKqw3wQBVyy++JI0y1GTe7DCBbMAckeNIQKk/BanALBB+16LtnDELoMcsM/BESDlz2heDR3WePwKSLo5eoxz3z6NNcFD+vu3ij14Aqz/DxGbKB7CAAAAAElFTkSuQmCC');
+        background-repeat: no-repeat;
+        background-position: 125px center;
+    }
+}
+
+#Message-Container {
+    visibility: hidden;
+    color: white;
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.30);
+    z-index: 1;
+    #message {
+        width: 300px;
+        height: 300px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        margin-left: -150px;
+        margin-top: -150px;
+    }
+}
+
+#page {
+    font-family: "Segoe UI", Arial, sans-serif;
+    text-align: center;
+    height: auto;
+    width: auto;
+    margin: auto;
+    #menu {
+        margin: auto;
+        padding: 10px;
+        height: 65px;
+        box-sizing: border-box;
+        h1 {
+            margin: 0;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 3.2rem;
+        }
+    }
+    #view {
+        position: absolute;
+        top:65px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: auto;
+           
+    }
+}
+
+.border {
+    border: 1px black solid;
+    border-radius: 5px;
+}
+
+
+
+#gradient {
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    color: #fff;
+    background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
+    background-size: 400% 400%;
+    animation: Gradient 15s ease infinite;
+}
+
+@keyframes Gradient {
+    0% {
+        background-position: 0% 50%
+    }
+    50% {
+        background-position: 100% 50%
+    }
+    100% {
+        background-position: 0% 50%
+    }
+}
+
+ /* Extra small devices (phones, 600px and down) */
+ @media only screen and (max-width: 400px) {
+     input, select{
+         width: 120px;
+     }
+ }
+
+
+.intro {
+	margin: 30px 0px;
+	font-weight: bold;
+}
+
+h1 {
+	color: #ffffff;
+	text-transform: uppercase;
+	font-weight: 800;
+}
+
+p {
+	font-weight: 600;
+}
+
+#first {
+	margin-top: 10px;
+	color: #FFCD5D;
+}
+
+#second {
+	color: #51DF70;
+
+}
+
+#third {
+	color: #025F70;
+	margin-bottom: 30px;
+}
+
+
+#enter {
+	border: none;
+	padding: 5px 15px;
+	border-radius: 5px;
+	color: #04A1BF;
+	background-color: #025F70;
+	transition: all 0.75s ease;
+	-webkit-transition: all 0.75s ease;
+	-moz-transition: all 0.75s ease;
+	-ms-transition: all 0.75s ease;
+	-o-transition: all 0.75 ease;
+	font-weight: normal;
+}
+
+#enter:hover{
+	background-color: #02798F;
+	color: #FFCD5D;
+}
+
+ul {
+	text-align: left;
+	margin-top: 20px;
+}
+
+
+li {
+	list-style: none;
+	padding: 10px 20px;
+	color: #ffffff;
+	text-transform: capitalize;
+	font-weight: 600;
+	border: 2px solid #025f70;
+	border-radius: 5px;
+	margin-bottom: 10px;
+	background: #4EB9CD;
+	transition: all 0.75s ease;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-ms-transition: all 0.5s ease;
+	-o-transition: all 0.5 ease;
+}
+
+li:hover {
+	background: #76CFE0;
+}
+
+li > button {
+	font-weight: normal;
+	background: none;
+	border: none;
+	float: right;
+	color: #025f70;
+	font-weight: 800;
+}
+
+input {
+	border-radius: 5px;
+	min-width: 65%;
+	padding: 5px;
+	border: none;
+}
+
+
+.done {
+	background: #51DF70 !important;
+	color: #00891E;
+}
+
+.delete {
+	display: none;
+}
+	</style>
+	<script type="text/javascript">
+		function answer1(){
+			if (document.getElementById("1").innerHTML=="Beach")
+			{
+				document.getElementById("Q").innerHTML="It starts raining, you see a cat with no shelter..."
+				document.getElementById("1").innerHTML="Approach the cat"
+				document.getElementById("2").innerHTML="Don't go near the cat, just keep moving"	
+			}
+			else if (document.getElementById("1").innerHTML=="Go inside")
+			{
+				document.getElementById("Q").innerHTML="You hear a jeep driving by..."
+				document.getElementById("1").innerHTML="Go outside, try to stop the jeep to give you a ride"
+				document.getElementById("2").innerHTML="Stay inside sheltered from the rain"	
+			}
+			else if (document.getElementById("1").innerHTML=="Go outside, try to stop the jeep to give you a ride")
+			{
+				document.getElementById("Q").innerHTML="The people driving jeep see you and they stop to ask if you need a ride..."
+				document.getElementById("1").innerHTML="Yes, please!"
+				document.getElementById("2").innerHTML="No thanks, I like the rain."	
+			}
+			
+			else if (document.getElementById("1").innerHTML=="Stay inside")
+			{
+				document.getElementById("Q").innerHTML="Now you're soaking wet. You didn't meet any new people unfortunately, and you'll have to wait until it stops raining to continue the adventure! Have some hope..."
+				document.getElementById("1").innerHTML=""
+				document.getElementById("2").innerHTML=""	
+			}
+			
+
+			else if (document.getElementById("1").innerHTML=="Approach the cat")
+			{
+				document.getElementById("Q").innerHTML="The cat is afraid and starts hissing at you..."
+				document.getElementById("1").innerHTML="Forget about the cat"
+				document.getElementById("2").innerHTML="Keep trying to get her to like you"	
+			}
+			else if (document.getElementById("1").innerHTML=="Forget about the cat")
+			{
+				document.getElementById("Q").innerHTML="A Jeep drives by, they ask if you need a lift..."
+				document.getElementById("1").innerHTML="Yes, please!"
+				document.getElementById("2").innerHTML="No thanks, I like the rain."	
+			}
+			else if (document.getElementById("1").innerHTML=="Yes, please!")
+			{
+				document.getElementById("Q").innerHTML="You go in, the people drive you home, and you made new friends and learned new things in this adventure!"
+				document.getElementById("1").innerHTML=""
+				document.getElementById("2").innerHTML=""	
+			}
+			else if (document.getElementById("1").innerHTML=="That's enough, I'm satisfied now... keep moving!")
+			{
+				document.getElementById("Q").innerHTML="Now the cat is following you wherever you go, A pink car pulls by asking if you need a lift..."
+				document.getElementById("1").innerHTML="Yes, please! Can I get in with the cat?"
+				document.getElementById("2").innerHTML="Yes, please! (And pretend you don't see the cat)"	
+			}
+			else if (document.getElementById("1").innerHTML=="Yes, please! Can I get in with the cat?")
+			{
+				document.getElementById("Q").innerHTML="The driver allows you to enter with the cat! You meet new people AND save a cat! That's awesome of you :D"
+				document.getElementById("1").innerHTML=""
+				document.getElementById("2").innerHTML=""	
+			}
+			else if (document.getElementById("1").innerHTML=="Yes, please! This cat is mine :)")
+			{ 
+				document.getElementById("Q").innerHTML="The driver allows you to enter with the cat! You save a cat AND meet new people (who you didn't really like, because they might have been a bit inconsiderate about the cat)! That's awesome of you :D"
+				document.getElementById("1").innerHTML=""
+				document.getElementById("2").innerHTML=""	
+			}
+
+		}
+		function answer2(){
+			if (document.getElementById("2").innerHTML=="Mountains")
+			{
+				document.getElementById("Q").innerHTML="It starts raining, You see an abandoned cabin..."
+				document.getElementById("1").innerHTML="Go inside"
+				document.getElementById("2").innerHTML="Stay under the rain"	
+			}
+			else if (document.getElementById("2").innerHTML=="Stay inside sheltered from the rain")
+			{
+				document.getElementById("Q").innerHTML="The jeep drives by... after a while rain starts dripping through the roof since it's a very old cabin..."
+				document.getElementById("1").innerHTML="Stay inside"
+				document.getElementById("2").innerHTML="Go outside"	
+			}
+			else if (document.getElementById("2").innerHTML=="Go outside")
+			{
+				document.getElementById("Q").innerHTML="Now you're soaking wet. You didn't meet any new people unfortunately, and you'll have to wait under the rain until it stops raining to continue the adventure! Have some hope..."
+				document.getElementById("1").innerHTML=""
+				document.getElementById("2").innerHTML=""	
+			}
+
+			else if (document.getElementById("2").innerHTML=="Don't go near the cat, just keep moving")
+			{
+				document.getElementById("Q").innerHTML="A Jeep drives by, they ask if you need a lift..."
+				document.getElementById("1").innerHTML="Yes, please!"
+				document.getElementById("2").innerHTML="No thanks, I like the rain."	
+			}
+			else if (document.getElementById("2").innerHTML=="Don't go near the cat, just keep moving")
+			{
+				document.getElementById("Q").innerHTML="A Jeep drives by, they ask if you need a lift..."
+				document.getElementById("1").innerHTML="Yes, please!"
+				document.getElementById("2").innerHTML="No thanks, I like the rain."	
+			}
+			else if (document.getElementById("2").innerHTML=="No thanks, I like the rain.")
+			{
+				document.getElementById("Q").innerHTML="Now you're soaking wet. You didn't meet any new people unfortunately, and you'll have to wait under the rain until it stops raining to continue the adventure! Have some hope... at least you like the rain!"
+				document.getElementById("1").innerHTML=""
+				document.getElementById("2").innerHTML=""	
+			}
+			else if (document.getElementById("2").innerHTML=="Stay under the rain")
+			{
+				document.getElementById("Q").innerHTML="Now you're soaking wet. You didn't meet any new people unfortunately, and you'll have to wait under the rain until it stops raining to continue the adventure! Have some hope... at least you like the rain!"
+				document.getElementById("1").innerHTML=""
+				document.getElementById("2").innerHTML=""	
+			}
+			else if (document.getElementById("2").innerHTML=="Keep trying to get her to like you")
+			{
+				document.getElementById("Q").innerHTML="Now the cat DOES like you, YAY! What's the next move though?"
+				document.getElementById("1").innerHTML="That's enough, I'm satisfied now... keep moving!"
+				document.getElementById("2").innerHTML="Hold the cat to protect her from rain"	
+			}
+			else if (document.getElementById("2").innerHTML=="Hold the cat to protect her from rain")
+			{
+				document.getElementById("Q").innerHTML="A Jeep drives by, they ask if you need a lift, saying that the cat is also welcome only if it's yours...If it's a stray cat they won't allow you to enter..."
+				document.getElementById("1").innerHTML="Yes, please! This cat is mine :)"
+				document.getElementById("2").innerHTML="Sorry, I'll hit the road, I just found this cat and will not leave it alone here in the rain."	
+			}
+			else if (document.getElementById("2").innerHTML=="Sorry, I'll hit the road, I just found this cat and will not leave it alone here in the rain.")
+			{
+				document.getElementById("Q").innerHTML="You're a great person, you priorotized the cat's life over you, which is very thoughtful of you! You're soaking wet now but should be proud of yourself :D"
+				document.getElementById("1").innerHTML=""
+				document.getElementById("2").innerHTML=""
+			}
+			else if (document.getElementById("2").innerHTML=="Yes, please! (And pretend you don't see the cat)")
+			{
+				document.getElementById("Q").innerHTML="You met new people, you get home successfully :D But the cat is still under the rain in Haifa, try to be more considerate next time :)"
+				document.getElementById("1").innerHTML=""
+				document.getElementById("2").innerHTML=""	
+			}
+
+		}
+	</script>
+</head>
+<body style="background-color: salmon;">
+<div align="center">
+	<h2 style="color: darkblue;">Haifa Story</h2>
+<h4 id="Q">You're walking on the shore of Haifa, on your right there's the beach, while on the left you have mountains, where do you go?</h4>
+
+<button id="1" onclick="answer1()">Beach</button>
+<button id="2" onclick="answer2()">Mountains</button>
+</div>
+<canvas id="canvas"></canvas>
+<script type="text/javascript">
+console.log("Hello World");
+
+var canvas = document.getElementById("canvas");
+var c = canvas.getContext("2d");
+var tx = window.innerWidth;
+var ty = window.innerHeight;
+canvas.width = tx;
+canvas.height = ty;
+//c.lineWidth= 5;
+//c.globalAlpha = 0.5;
+
+var mousex = 0;
+var mousey = 0;
+
+addEventListener("mousemove", function() {
+  mousex = event.clientX;
+  mousey = event.clientY;
+});
+
+
+var grav = 0.99;
+c.strokeWidth=5;
+function randomColor() {
+  return (
+    "rgba(" +
+    Math.round(Math.random() * 250) +
+    "," +
+    Math.round(Math.random() * 250) +
+    "," +
+    Math.round(Math.random() * 250) +
+    "," +
+    Math.ceil(Math.random() * 10) / 10 +
+    ")"
+  );
+}
+
+function Ball() {
+  this.color = randomColor();
+  this.radius = Math.random() * 20 + 14;
+  this.startradius = this.radius;
+  this.x = Math.random() * (tx - this.radius * 2) + this.radius;
+  this.y = Math.random() * (ty - this.radius);
+  this.dy = Math.random() * 2;
+  this.dx = Math.round((Math.random() - 0.5) * 10);
+  this.vel = Math.random() /5;
+  this.update = function() {
+    c.beginPath();
+    c.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+    c.fillStyle = this.color;
+    c.fill();
+    //c.stroke();
+  };
+}
+
+var bal = [];
+for (var i=0; i<50; i++){
+    bal.push(new Ball());
+}
+
+function animate() {    
+  if (tx != window.innerWidth || ty != window.innerHeight) {
+    tx = window.innerWidth;
+    ty = window.innerHeight;
+    canvas.width = tx;
+    canvas.height = ty;
+  }
+  requestAnimationFrame(animate);
+  c.clearRect(0, 0, tx, ty);
+  for (var i = 0; i < bal.length; i++) {
+    bal[i].update();
+    bal[i].y += bal[i].dy;
+    bal[i].x += bal[i].dx;
+    if (bal[i].y + bal[i].radius >= ty) {
+      bal[i].dy = -bal[i].dy * grav;
+    } else {
+      bal[i].dy += bal[i].vel;
+    }    
+    if(bal[i].x + bal[i].radius > tx || bal[i].x - bal[i].radius < 0){
+        bal[i].dx = -bal[i].dx;
+    }
+    if(mousex > bal[i].x - 20 && 
+      mousex < bal[i].x + 20 &&
+      mousey > bal[i].y -50 &&
+      mousey < bal[i].y +50 &&
+      bal[i].radius < 70){
+        //bal[i].x += +1;
+        bal[i].radius +=5; 
+      } else {
+        if(bal[i].radius > bal[i].startradius){
+          bal[i].radius += -5;
+        }
+      }
+      
+    //forloop end
+    }
+//animation end
+}
+
+animate();
+
+setInterval(function() {
+  bal.push(new Ball());
+  bal.splice(0, 1);
+}, 400);
+
+</script>
+
+</body>
+</html>
