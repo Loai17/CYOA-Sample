@@ -11,7 +11,7 @@ gevent-socketio==0.3.5rc2
 gevent-websocket==0.10.1
 gunicorn==19.5.0
 itsdangerous==0.24
-Jinja2==2.9.6
+Jinja2==2.11.3
 passlib==1.7.1
 psycopg2==2.7.3.2
 python-dateutil==2.4.2
