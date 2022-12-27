@@ -25,4 +25,4 @@ Werkzeug==0.12.2
 WTForms==2.1
 pyperclip==1.6.2
 datetime==4.2
-setuptools==20.7.0
+setuptools==65.5.1
